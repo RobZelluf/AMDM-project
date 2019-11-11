@@ -35,7 +35,7 @@ class Graph:
             self.adjacency_matrix[id1, id2] = 1
 
 
-def read_file(filename):
+def read_file(filename='CA-GrQc.txt'):
     vertices = []
     edges = []
 
@@ -59,3 +59,25 @@ def read_file(filename):
 
     graph = Graph(vertices, edges)
     return graph
+
+
+def score_partitioning(graph, partitions):
+    start = datetime.datetime.now()
+    scores = np.zeros(int(max(partitions) + 1))
+    for edge in graph.edges:
+        id1 = graph.get_vertex_id(edge[0])
+        id2 = graph.get_vertex_id(edge[1])
+
+        cluster1 = int(partitions[id1])
+        cluster2 = int(partitions[id2])
+
+        if cluster1 != cluster2:
+            scores[cluster1] += 1
+            scores[cluster2] += 1
+
+    for i in range(len(scores)):
+        scores[i] /= len([x for x in partitions if x == i])
+
+    end = datetime.datetime.now()
+    print("Score calculated in", (end-start).total_seconds(), "seconds")
+    return sum(scores)
