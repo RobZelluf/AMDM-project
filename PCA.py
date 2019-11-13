@@ -8,7 +8,16 @@ from sklearn.cluster import SpectralClustering
 
 def embedding(graph, d):
     pca = PCA(n_components=d)
-    vec = pca.fit_transform(graph.adjacency_matrix)
+
+    # Make Laplacian Matrix
+    v = graph.num_vertices
+    laplacian = -graph.adjacency_matrix
+    degree = 0
+    for j in range(graph.num_vertices):
+        laplacian[j][j] = sum(graph.adjacency_matrix[j]) # diagonal entries are degree of vertex
+
+    print(laplacian[1])
+    vec = pca.fit_transform(laplacian)
 
     return vec
 
