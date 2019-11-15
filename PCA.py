@@ -1,20 +1,18 @@
-from utils import read_file, write_file, Graph, score_partitioning
+from utils import *
 
 import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from sklearn.cluster import AgglomerativeClustering
-from sklearn.cluster import SpectralClustering
+
 
 def embedding(graph, d):
     pca = PCA(n_components=d)
 
     # Make Laplacian Matrix
     v = graph.num_vertices
-    laplacian = -graph.adjacency_matrix
-    degree = 0
-    for j in range(graph.num_vertices):
-        laplacian[j][j] = sum(graph.adjacency_matrix[j]) # diagonal entries are degree of vertex
+
+    laplacian = get_laplacian(graph.adjacency_matrix)
 
     print(laplacian[1])
     vec = pca.fit_transform(laplacian)
@@ -34,6 +32,7 @@ for i in range(5):
 score = score_partitioning(graph, labels)
 print(score)
 
+
 # Agglomerative Hierarchical Clustering
 ac = AgglomerativeClustering(5)
 ac.fit(embeddings)
@@ -42,20 +41,6 @@ for i in range(5):
     print("Num", i, " - ", len([x for x in ac_labels if x == i]))
 score = score_partitioning(graph, ac_labels)
 print(score)
-
-# Spectral Clustering
-sc = SpectralClustering(2, affinity='precomputed', n_init=100)
-sc.fit(graph.adjacency_matrix)
-sc_labels = sc.labels_
-for i in range(5):
-    print("Num", i, " - ", len([x for x in sc_labels if x == i]))
-score = score_partitioning(graph, sc_labels)
-print(score)
-
-write_file("CA-GrQc", graph, sc_labels)
-
-
-
 
 
 # CONFIRMING SC OUTPUT

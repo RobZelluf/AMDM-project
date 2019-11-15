@@ -89,3 +89,11 @@ def score_partitioning(graph, partitions):
     end = datetime.datetime.now()
     print("Score calculated in", (end-start).total_seconds(), "seconds")
     return sum(scores)
+
+
+def get_laplacian(adjacency_matrix):
+    laplacian = -adjacency_matrix
+    for j in range(len(adjacency_matrix)):
+        laplacian[j][j] = sum(adjacency_matrix[j]) # diagonal entries are degree of vertex
+
+    return laplacian
