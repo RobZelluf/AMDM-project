@@ -14,7 +14,12 @@ class Graph:
 
         self.build_map()
         self.adjacency_matrix = np.zeros((self.num_vertices, self.num_vertices))
+        self.laplacian = np.zeros((self.num_vertices, self.num_vertices))
         self.build_adjacency_matrix()
+        self.build_laplacian()
+
+        for i in range(self.num_vertices):
+            assert sum(self.laplacian[i]) == 0
 
     def build_map(self):
         counter = 0
@@ -33,6 +38,13 @@ class Graph:
             id1 = self.get_vertex_id(edge[0])
             id2 = self.get_vertex_id(edge[1])
             self.adjacency_matrix[id1, id2] = 1
+
+    def build_laplacian(self):
+        laplacian = self.adjacency_matrix
+        for j in range(self.num_vertices):
+            laplacian[j][j] = sum(self.adjacency_matrix[j]) # diagonal entries are degree of vertex
+
+        return laplacian
 
 
 def read_file(filename='CA-GrQc.txt'):
@@ -89,11 +101,3 @@ def score_partitioning(graph, partitions):
     end = datetime.datetime.now()
     print("Score calculated in", (end-start).total_seconds(), "seconds")
     return sum(scores)
-
-
-def get_laplacian(adjacency_matrix):
-    laplacian = -adjacency_matrix
-    for j in range(len(adjacency_matrix)):
-        laplacian[j][j] = sum(adjacency_matrix[j]) # diagonal entries are degree of vertex
-
-    return laplacian

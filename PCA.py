@@ -8,14 +8,7 @@ from sklearn.cluster import AgglomerativeClustering
 
 def embedding(graph, d):
     pca = PCA(n_components=d)
-
-    # Make Laplacian Matrix
-    v = graph.num_vertices
-
-    laplacian = get_laplacian(graph.adjacency_matrix)
-
-    print(laplacian[1])
-    vec = pca.fit_transform(laplacian)
+    vec = pca.fit_transform(graph.laplacian)
 
     return vec
 
