@@ -4,7 +4,7 @@ from utils import *
 graph = read_file()
 
 # Spectral Clustering
-sc = SpectralClustering(2, affinity='precomputed', n_init=100)
+sc = SpectralClustering(5, affinity='precomputed', n_init=100)
 sc.fit(graph.adjacency_matrix)
 sc_labels = sc.labels_
 for i in range(5):

@@ -16,6 +16,7 @@ def embedding(graph, d):
 graph = read_file()
 embeddings = embedding(graph, 100)
 
+
 k_means = KMeans(5)
 k_means.fit(embeddings)
 labels = k_means.labels_
