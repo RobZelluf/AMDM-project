@@ -67,7 +67,7 @@ def read_file(filename='CA-GrQc.txt'):
         i = 0
         lines = f.readlines()
         for line in lines:
-            if i % 10000 == 0:
+            if i % int(len(lines) / 10) == 0:
                 print("Reading line", i, "out of", len(lines), "- ", int(i / len(lines) * 100), "%")
 
             i += 1
