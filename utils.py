@@ -44,11 +44,12 @@ class Graph:
             id1 = self.get_vertex_id(edge[0])
             id2 = self.get_vertex_id(edge[1])
             self.adjacency_matrix[id1, id2] = 1
+            self.adjacency_matrix[id2, id1] = 1
 
     def build_laplacian(self):
-        D = np.diag(self.adjacency_matrix.sum(axis=1))
-        L = D - self.adjacency_matrix
-        self.laplacian = L
+        laplacian = self.adjacency_matrix.copy()
+        for j in range(self.num_vertices):
+            laplacian[j][j] = sum(self.adjacency_matrix[j, :])  # diagonal entries are degree of vertex
 
     def build_attached_vertices(self):
         for i in range(self.num_vertices):
