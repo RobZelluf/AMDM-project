@@ -13,13 +13,19 @@ class Graph:
         self.edges = edges
 
         self.build_map()
-        self.adjacency_matrix = np.zeros((self.num_vertices, self.num_vertices))
-        self.laplacian = np.zeros((self.num_vertices, self.num_vertices))
-        self.build_adjacency_matrix()
-        self.build_laplacian()
+        try:
+            self.adjacency_matrix = np.zeros((self.num_vertices, self.num_vertices))
+            self.laplacian = np.zeros((self.num_vertices, self.num_vertices))
+            self.attached_vertices = dict()
+            self.build_adjacency_matrix()
+            self.build_laplacian()
+            self.build_attached_vertices()
 
-        for i in range(self.num_vertices):
-            assert sum(self.laplacian[i]) == 0
+            for i in range(self.num_vertices):
+                assert sum(self.laplacian[i]) == 0
+
+        except:
+            print("Too much data to build matrices!!")
 
     def build_map(self):
         counter = 0
@@ -40,29 +46,40 @@ class Graph:
             self.adjacency_matrix[id1, id2] = 1
 
     def build_laplacian(self):
-        laplacian = self.adjacency_matrix
-        for j in range(self.num_vertices):
-            laplacian[j][j] = sum(self.adjacency_matrix[j]) # diagonal entries are degree of vertex
+        D = np.diag(self.adjacency_matrix.sum(axis=1))
+        L = D - self.adjacency_matrix
+        self.laplacian = L
 
-        return laplacian
+    def build_attached_vertices(self):
+        for i in range(self.num_vertices):
+            # attached_vertices[i] = list(np.where(graph.adjacency_matrix[i] == 1))
+            self.attached_vertices[i] = [j for j in range(self.num_vertices) if self.adjacency_matrix[i, j] == 1]
 
 
 def read_file(filename='CA-GrQc.txt'):
+    print(filename)
     vertices = []
     edges = []
 
     start = datetime.datetime.now()
     with open('data/' + filename, 'r') as f:
-        for line in f.readlines():
+        i = 0
+        lines = f.readlines()
+        for line in lines:
+            if i % 10000 == 0:
+                print("Reading line", i, "out of", len(lines), "- ", int(i / len(lines) * 100), "%")
+
+            i += 1
+
             if line[0] == "#" or line[0] == " ":
                 continue
 
             V = [int(v) for v in line.split()]
             edges.append(V)
             for vertex in V:
-                if vertex not in vertices:
-                    vertices.append(vertex)
+                vertices.append(vertex)
 
+    vertices = list(set(vertices))
     end = datetime.datetime.now()
 
     print("File read in", (end - start).total_seconds(), "seconds")
@@ -99,5 +116,5 @@ def score_partitioning(graph, partitions):
         scores[i] /= len([x for x in partitions if x == i])
 
     end = datetime.datetime.now()
-    print("Score calculated in", (end-start).total_seconds(), "seconds")
+    print("Score calculated in", (end - start).total_seconds(), "seconds")
     return sum(scores)

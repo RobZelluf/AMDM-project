@@ -3,9 +3,9 @@ import pandas as pd
 import pickle
 from utils import read_file, Graph
 
-filename = 'CA-GrQc.txt'
+filename = 'roadNet-CA.txt'
 
-graph = read_file(filename)
+graph = read_file(filename=filename)
 
 
 
