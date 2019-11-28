@@ -48,6 +48,9 @@ class Graph:
     def get_connected_vertex(self, v):
         return random.sample(self.edge_dict[v], 1)[0]
 
+    def get_random_vertex(self):
+        return random.sample(self.vertices, 1)[0]
+
     def check_edge(self, v1, v2):
         if [v1, v2] in self.edges or [v2, v1] in self.edges:
             return True
