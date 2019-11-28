@@ -38,7 +38,9 @@ for it in range(iterations):
         counts[i] /= partitioning.count(i)
 
     new_partitioning = list(np.zeros(graph.num_vertices))
-    for v in graph.vertices:
+    random_v = graph.vertices.copy()
+    random.shuffle(random_v)
+    for v in random_v:
         c_counts = counts[:, v]
         sorted_c = [x for _, x in sorted(zip(c_counts, range(k)))]
         for c in sorted_c:
