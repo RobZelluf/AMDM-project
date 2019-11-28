@@ -45,9 +45,10 @@ class Graph:
             self.edge_dict[edge[0]].append(edge[1])
             self.edge_dict[edge[1]].append(edge[0])
 
-    def get_connected_vertex(self, v, k=1):
+    def get_connected_vertex(self, v):
         vertices = self.edge_dict[v]
-        return random.sample(vertices, k)
+
+        return random.sample(vertices, 1)[0]
 
     def check_edge(self, v1, v2):
         if [v1, v2] in self.edges or [v2, v1] in self.edges:
