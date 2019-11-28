@@ -17,19 +17,17 @@ class Graph:
         self.edge_dict = defaultdict(list)
         self.build_edge_dict()
 
-        try:
-            self.adjacency_matrix = np.zeros((self.num_vertices, self.num_vertices))
-            self.laplacian = np.zeros((self.num_vertices, self.num_vertices))
-            self.attached_vertices = dict()
-            self.build_adjacency_matrix()
-            self.build_laplacian()
-            self.build_attached_vertices()
-
-            for i in range(self.num_vertices):
-                assert sum(self.laplacian[i]) == 0
-
-        except:
-            print("Too much data to build matrices!!")
+        # try:
+        #     self.adjacency_matrix = np.zeros((self.num_vertices, self.num_vertices))
+        #     self.laplacian = np.zeros((self.num_vertices, self.num_vertices))
+        #     self.build_adjacency_matrix()
+        #     self.build_laplacian()
+        #
+        #     for i in range(self.num_vertices):
+        #         assert sum(self.laplacian[i]) == 0
+        #
+        # except:
+        #     print("Too much data to build matrices!!")
 
     def build_map(self):
         counter = 0
@@ -69,13 +67,7 @@ class Graph:
         for j in range(self.num_vertices):
             laplacian[j][j] = sum(self.adjacency_matrix[j, :])  # diagonal entries are degree of vertex
 
-    def build_attached_vertices(self):
-        for i in range(self.num_vertices):
-            # attached_vertices[i] = list(np.where(graph.adjacency_matrix[i] == 1))
-            self.attached_vertices[i] = [j for j in range(self.num_vertices) if self.adjacency_matrix[i, j] == 1]
-
-
-def read_file(filename='CA-GrQc.txt'):
+def read_file(filename='ca-GrQc.txt'):
     print(filename)
     vertices = []
     edges = []
