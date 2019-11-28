@@ -1,5 +1,7 @@
 import numpy as np
 import datetime
+from collections import defaultdict
+import random
 
 
 class Graph:
@@ -11,8 +13,10 @@ class Graph:
         self.num_edges = len(edges)
 
         self.edges = edges
-
         self.build_map()
+        self.edge_dict = defaultdict(list)
+        self.build_edge_dict()
+
         try:
             self.adjacency_matrix = np.zeros((self.num_vertices, self.num_vertices))
             self.laplacian = np.zeros((self.num_vertices, self.num_vertices))
@@ -36,8 +40,23 @@ class Graph:
 
         self.vertex_map = vertex_map
 
+    def build_edge_dict(self):
+        for edge in self.edges:
+            self.edge_dict[edge[0]].append(edge[1])
+            self.edge_dict[edge[1]].append(edge[0])
+
+    def get_connected_vertex(self, v, k=1):
+        vertices = self.edge_dict[v]
+        return random.sample(vertices, k)
+
     def get_vertex_id(self, id):
         return self.vertex_map[id]
+
+    def check_edge(self, v1, v2):
+        if [v1, v2] in self.edges or [v2, v1] in self.edges:
+            return True
+        else:
+            return False
 
     def build_adjacency_matrix(self):
         for edge in self.edges:
