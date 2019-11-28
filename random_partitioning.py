@@ -11,8 +11,7 @@ graph = read_file(filename)
 def random_partition(graph, k):
     partitions = np.zeros(graph.num_vertices)
     for vertex in graph.vertices:
-        vertex_id = graph.get_vertex_id(vertex)
-        partitions[vertex_id] = int(np.random.randint(0, k - 1))
+        partitions[vertex] = int(np.random.randint(0, k - 1))
 
     return partitions
 

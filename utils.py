@@ -49,9 +49,6 @@ class Graph:
         vertices = self.edge_dict[v]
         return random.sample(vertices, k)
 
-    def get_vertex_id(self, id):
-        return self.vertex_map[id]
-
     def check_edge(self, v1, v2):
         if [v1, v2] in self.edges or [v2, v1] in self.edges:
             return True
@@ -60,8 +57,8 @@ class Graph:
 
     def build_adjacency_matrix(self):
         for edge in self.edges:
-            id1 = self.get_vertex_id(edge[0])
-            id2 = self.get_vertex_id(edge[1])
+            id1 = edge[0]
+            id2 = edge[1]
             self.adjacency_matrix[id1, id2] = 1
             self.adjacency_matrix[id2, id1] = 1
 
@@ -96,8 +93,7 @@ def read_file(filename='CA-GrQc.txt'):
 
             V = [int(v) for v in line.split()]
             edges.append(V)
-            for vertex in V:
-                vertices.append(vertex)
+            vertices.extend(V)
 
     vertices = list(set(vertices))
     end = datetime.datetime.now()
@@ -122,8 +118,8 @@ def score_partitioning(graph, partitions):
     start = datetime.datetime.now()
     scores = np.zeros(int(max(partitions) + 1))
     for edge in graph.edges:
-        id1 = graph.get_vertex_id(edge[0])
-        id2 = graph.get_vertex_id(edge[1])
+        id1 = edge[0]
+        id2 = edge[1]
 
         cluster1 = int(partitions[id1])
         cluster2 = int(partitions[id2])
