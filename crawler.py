@@ -3,27 +3,22 @@ import numpy as np
 import random
 import datetime
 
-graph = read_file()
+graph = read_file('ca-GrQc.txt')
 
-attached_vertices = dict()
-for i in range(graph.num_vertices):
-    # attached_vertices[i] = list(np.where(graph.adjacency_matrix[i] == 1))
-    attached_vertices[i] = [j for j in range(graph.num_vertices) if graph.adjacency_matrix[i, j] == 1]
-
-
-def one_crawl(graph, attached_vertices, steps):
+def one_crawl(graph, steps):
     vertices_reached = list()
     index = np.random.randint(0, graph.num_vertices)
     for i in range(steps):
         vertices_reached.append(index)
-        index = random.choice(attached_vertices[index])
+        index = graph.get_connected_vertex(index)
+    x = max(set(vertices_reached), key=vertices_reached.count)
     return vertices_reached
 
 
-def many_crawls(graph, attached_vertices, steps, crawls):
+def many_crawls(graph, steps, crawls):
     co_visit_matrix = np.zeros((graph.num_vertices, graph.num_vertices))
     for r in range(crawls):
-        vertices_reached = one_crawl(graph, attached_vertices, steps)
+        vertices_reached = one_crawl(graph, steps)
         for i in range(len(vertices_reached)):
             for j in range(i+1, len(vertices_reached)):
                 if vertices_reached[i] != vertices_reached[j]:
@@ -33,7 +28,7 @@ def many_crawls(graph, attached_vertices, steps, crawls):
 
 
 start = datetime.datetime.now()
-co_visit_matrix = many_crawls(graph, attached_vertices, 100, 1000)
+co_visit_matrix = many_crawls(graph, 100, 1000)
 print(co_visit_matrix[0, :])
 end = datetime.datetime.now()
 print("Crawled in ", (end - start).total_seconds(), "seconds")

@@ -75,7 +75,7 @@ class Graph:
             self.attached_vertices[i] = [j for j in range(self.num_vertices) if self.adjacency_matrix[i, j] == 1]
 
 
-def read_file(filename='CA-GrQc.txt'):
+def read_file(filename='ca-GrQc.txt'):
     print(filename)
     vertices = []
     edges = []
