@@ -16,8 +16,8 @@ for i in range(k):
 vertex = graph.get_random_vertex()
 curr_cluster = int(partitioning[vertex])
 
-alpha = 0.01
-jumps = 100
+alpha = 0.1
+jumps = 1000
 max_cluster_size = (graph.num_vertices - (graph.num_vertices / (k * 2))) / (k - 1)
 
 iterations = 100
@@ -37,7 +37,7 @@ for it in range(iterations):
     for i in range(k):
         counts[i] /= partitioning.count(i)
 
-    new_partitioning = list(np.zeros(graph.num_vertices))
+    new_partitioning = graph.num_vertices * [-1]
     random_v = graph.vertices.copy()
     random.shuffle(random_v)
     for v in random_v:
@@ -51,8 +51,8 @@ for it in range(iterations):
     if new_score < curr_score:
         partitioning = new_partitioning.copy()
         curr_score = new_score
-
-        print("Iteration", it, "- Score:", score_partitioning(graph, partitioning))
         for i in range(k):
             print("Num", i, " - ", len([x for x in partitioning if x == i]))
         print("---")
+
+    print("Iteration", it, "- Score:", score_partitioning(graph, partitioning))
