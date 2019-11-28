@@ -3,6 +3,7 @@ import numpy as np
 import random
 import datetime
 from random_partitioning import random_partition
+import pickle as p
 
 graph = read_file()
 
@@ -20,7 +21,7 @@ alpha = 0.1
 jumps = 1000
 max_cluster_size = (graph.num_vertices - (graph.num_vertices / (k * 2))) / (k - 1)
 
-iterations = 100
+iterations = 999999
 
 for it in range(iterations):
     counts = np.zeros((k, graph.num_vertices))
@@ -54,5 +55,8 @@ for it in range(iterations):
         for i in range(k):
             print("Num", i, " - ", len([x for x in partitioning if x == i]))
         print("---")
+
+        with open("PR-best.p", "wb") as f:
+            p.dump(partitioning, f)
 
     print("Iteration", it, "- Score:", score_partitioning(graph, partitioning))
