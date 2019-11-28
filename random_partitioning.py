@@ -9,4 +9,4 @@ def random_partition(graph, k):
     for vertex in graph.vertices:
         partitions[vertex] = int(np.random.randint(0, k))
 
-    return partitions
+    return list(partitions)

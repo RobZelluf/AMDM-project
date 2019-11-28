@@ -8,6 +8,7 @@ graph = read_file()
 
 k = 5
 partitioning = random_partition(graph, k)
+curr_score = score_partitioning(graph, partitioning)
 
 for i in range(k):
     print("Num", i, " - ", len([x for x in partitioning if x == i]))
@@ -15,9 +16,9 @@ for i in range(k):
 vertex = graph.get_random_vertex()
 curr_cluster = int(partitioning[vertex])
 
-alpha = 0.001
-jumps = 1000
-max_cluster_size = graph.num_vertices / (k * 0.8)
+alpha = 0.01
+jumps = 100
+max_cluster_size = (graph.num_vertices - (graph.num_vertices / (k * 2))) / (k - 1)
 
 iterations = 100
 
@@ -33,14 +34,23 @@ for it in range(iterations):
             vertex = graph.get_random_vertex()
             curr_cluster = int(partitioning[vertex])
 
+    for i in range(k):
+        counts[i] /= partitioning.count(i)
+
+    new_partitioning = list(np.zeros(graph.num_vertices))
     for v in graph.vertices:
         c_counts = counts[:, v]
         sorted_c = [x for _, x in sorted(zip(c_counts, range(k)))]
         for c in sorted_c:
-            if partitioning.count(c) < max_cluster_size:
-                partitioning[v] = c
+            if new_partitioning.count(c) < max_cluster_size:
+                new_partitioning[v] = c
 
-    print("Iteration", it, "- Score:", score_partitioning(graph, partitioning))
-    for i in range(k):
-        print("Num", i, " - ", len([x for x in partitioning if x == i]))
-    print("---")
+    new_score = score_partitioning(graph, new_partitioning)
+    if new_score < curr_score:
+        partitioning = new_partitioning.copy()
+        curr_score = new_score
+
+        print("Iteration", it, "- Score:", score_partitioning(graph, partitioning))
+        for i in range(k):
+            print("Num", i, " - ", len([x for x in partitioning if x == i]))
+        print("---")

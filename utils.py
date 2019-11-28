@@ -67,7 +67,8 @@ class Graph:
         for j in range(self.num_vertices):
             laplacian[j][j] = sum(self.adjacency_matrix[j, :])  # diagonal entries are degree of vertex
 
-def read_file(filename='ca-GrQc.txt'):
+
+def read_file(filename='CA-GrQc.txt'):
     print(filename)
     vertices = []
     edges = []
