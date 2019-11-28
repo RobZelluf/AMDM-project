@@ -110,7 +110,6 @@ def write_file(graphid, graph, partitions):
 
 
 def score_partitioning(graph, partitions):
-    start = datetime.datetime.now()
     scores = np.zeros(int(max(partitions) + 1))
     for edge in graph.edges:
         id1 = edge[0]
@@ -126,6 +125,4 @@ def score_partitioning(graph, partitions):
     for i in range(len(scores)):
         scores[i] /= len([x for x in partitions if x == i])
 
-    end = datetime.datetime.now()
-    print("Score calculated in", (end - start).total_seconds(), "seconds")
     return sum(scores)
