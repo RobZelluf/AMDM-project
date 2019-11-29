@@ -4,10 +4,10 @@ import numpy as np
 import random
 import datetime
 
-graph = read_file('roadNet-CA.txt')
-num_partitions = 100
+graph = read_file('Oregon-1.txt')
+num_partitions = 5
 
-print(score_partitioning(graph, random_partition(graph, 5)))
+print(score_partitioning(graph, random_partition(graph, num_partitions)))
 
 def one_crawl(graph, v, steps):
     vertices_reached = list()
@@ -34,7 +34,7 @@ def init_vertices(graph, init_vert=0):
 
 def assign_partition(graph, partitioning, normalization, assign_v):
     visit_count = np.zeros(graph.num_vertices)
-    crawls = int(max(100, 800 - normalization.mean()))
+    crawls = int(max(200, 800 - normalization.mean()))
     steps = 20
     if assign_v % int(graph.num_vertices / 100) == 0:
         print("Assigning partition ", assign_v, "out of", graph.num_vertices, "- ", int(assign_v / graph.num_vertices * 100), "%")
