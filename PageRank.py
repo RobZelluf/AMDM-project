@@ -1,8 +1,7 @@
-from utils import read_file, write_file, Graph, score_partitioning
+from utils import read_file, write_file, Graph, score_partitioning, random_partition
 import numpy as np
 import random
 import datetime
-from random_partitioning import random_partition
 import pickle as p
 
 graph = read_file()

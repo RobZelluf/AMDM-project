@@ -108,6 +108,12 @@ def write_file(graphid, graph, partitions):
             f.writelines("" + str(vertex) + " " + str(partitions[graph.vertex_map[vertex]]) + "\n")
     f.close()
 
+def random_partition(graph, k):
+    partitions = np.zeros(graph.num_vertices)
+    for vertex in graph.vertices:
+        partitions[vertex] = int(np.random.randint(0, k))
+
+    return list(partitions)
 
 def score_partitioning(graph, partitions):
     scores = np.zeros(int(max(partitions) + 1))
@@ -126,3 +132,4 @@ def score_partitioning(graph, partitions):
         scores[i] /= len([x for x in partitions if x == i])
 
     return sum(scores)
+
