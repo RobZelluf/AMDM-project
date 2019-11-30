@@ -8,6 +8,13 @@ graph = read_file('ca-GrQc.txt')
 num_partitions = 2
 init_partition_size = 10
 
+# TEST VISUAL PARTITION
+
+partitioning = np.zeros(graph.num_vertices, dtype=int)
+partitioning[[3162,136,2565,1207,3205,1895,526,3126,1010,3505,1980,3221,4084,3819,224,2922]] = 1
+print(score_partitioning(graph,partitioning))
+
+
 print("Random Partition Score: ", score_partitioning(graph, random_partition(graph, num_partitions)))
 
 start = datetime.datetime.now()
@@ -26,7 +33,13 @@ normalization = partition_count(partitioning)
 
 for i in range(graph.num_vertices):
     if partitioning[i] == -1:
-        partitioning[i] = assign_partition(graph, partitioning, normalization, i, num_partitions)
+        partitioning[i] = assign_partition(graph, partitioning, normalization, i, num_partitions, threshold=0.5)
+        if partitioning[i] != -1:
+            normalization[partitioning[i]] += 1
+
+for i in range(graph.num_vertices):  # Classify edge cases
+    if partitioning[i] == -1:
+        partitioning[i] = assign_partition(graph, partitioning, normalization, i, num_partitions, threshold=0)
         if partitioning[i] != -1:
             normalization[partitioning[i]] += 1
 

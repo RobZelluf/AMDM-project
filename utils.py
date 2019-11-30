@@ -101,11 +101,11 @@ def read_file(filename='CA-GrQc.txt'):
     return graph
 
 
-def write_file(graphid, graph, partitions):
+def write_file(graphid, graph, partitioning, num_partitions):
     with open('data/' + str(graphid) + '.output', 'w') as f:
-        f.writelines("# " + str(graphid) + " " + str(graph.num_vertices) + " " + str(graph.num_edges) + "\n")
+        f.writelines("# " + str(graphid) + " " + str(graph.num_vertices) + " " + str(graph.num_edges) + " " + str(num_partitions) + "\n")
         for vertex in graph.vertices:
-            f.writelines("" + str(vertex) + " " + str(partitions[graph.vertex_map[vertex]]) + "\n")
+            f.writelines("" + str(vertex) + " " + str(partitioning[vertex]) + "\n")
     f.close()
 
 def random_partition(graph, k):

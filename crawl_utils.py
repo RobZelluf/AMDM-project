@@ -24,7 +24,7 @@ def grow_monster_partition(graph, seed=0, size=1000, blacklist=None):
     # if blacklist = None:
     #     blacklist = list()
     partition = list()
-    init_vert = select_init(graph, seed)
+    init_vert = seed
     partition.append(init_vert)
     visit_count = [0]*graph.num_vertices
 
@@ -79,7 +79,7 @@ def grow_monster_partition(graph, seed=0, size=1000, blacklist=None):
 #     return init_partitions
 
 
-def assign_partition(graph, partitioning, normalization, assign_v, num_partitions):
+def assign_partition(graph, partitioning, normalization, assign_v, num_partitions, threshold = 0):
     visit_count = np.zeros(graph.num_vertices)
     crawls = 2000 - int((sum(normalization)/graph.num_vertices)*1900)
     steps = 4 - int((sum(normalization)/graph.num_vertices)*3)
@@ -101,7 +101,7 @@ def assign_partition(graph, partitioning, normalization, assign_v, num_partition
         print(votes)
     normalized_votes = np.divide(votes, normalization)
     normalized_votes = normalized_votes/(sum(normalized_votes)+0.001)
-    if max(normalized_votes) - min(normalized_votes) > 0.5:
+    if max(normalized_votes) - min(normalized_votes) >= threshold:
         return normalized_votes.argmax()
     else:
         return -1
