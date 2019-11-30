@@ -4,16 +4,16 @@ import numpy as np
 import random
 import datetime
 
-graph = read_file('Oregon-1.txt')
-num_partitions = 5
+graph = read_file('ca-GrQc.txt')
+num_partitions = 2
 
-print(score_partitioning(graph, random_partition(graph, num_partitions)))
+print("Random Partition Score: ", score_partitioning(graph, random_partition(graph, num_partitions)))
 
 def one_crawl(graph, v, steps):
     vertices_reached = list()
     for i in range(steps):
-        vertices_reached.append(v)
         v = graph.get_connected_vertex(v)
+        vertices_reached.append(v)
     return vertices_reached
 
 
@@ -24,7 +24,7 @@ def init_vertices(graph, init_vert=0):
     for k in range(num_partitions-1):
         print(k+1, "vertices initialized out of ", num_partitions)
         for i in range(10000):
-            verts = one_crawl(graph, init_vert, 20)
+            verts = one_crawl(graph, init_vert, 40)
             for v in verts:
                 visit_count[v] += 1
         init_vert = visit_count.argmin()
@@ -34,8 +34,8 @@ def init_vertices(graph, init_vert=0):
 
 def assign_partition(graph, partitioning, normalization, assign_v):
     visit_count = np.zeros(graph.num_vertices)
-    crawls = int(max(200, 800 - normalization.mean()))
-    steps = 20
+    crawls = int(max(300, 1500 - normalization.mean()))
+    steps = 40
     if assign_v % int(graph.num_vertices / 100) == 0:
         print("Assigning partition ", assign_v, "out of", graph.num_vertices, "- ", int(assign_v / graph.num_vertices * 100), "%")
         print("Crawls: ", crawls)
@@ -54,6 +54,10 @@ def assign_partition(graph, partitioning, normalization, assign_v):
         print(votes)
     normalized_votes = np.divide(votes, normalization)
     return(normalized_votes.argmax())
+
+# This one will crawl from the partition roots and add vertices and then crawl from the partitions and add vertices. Can easily be scaled to add 10 or 100 vertices at a time.
+def assign_ten_vertices(graph, partitioning):
+    return
 
 
 start = datetime.datetime.now()
