@@ -133,3 +133,11 @@ def score_partitioning(graph, partitions):
 
     return sum(scores)
 
+
+def partition_count(partitioning):
+    K = max(partitioning) + 1
+    counts = [0] * K
+    for i in range(len(partitioning)):
+        if(partitioning[i] != -1):
+            counts[partitioning[i]] += 1
+    return counts

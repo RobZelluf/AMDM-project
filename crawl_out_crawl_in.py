@@ -1,96 +1,91 @@
-from utils import read_file, write_file, Graph, score_partitioning, random_partition
-
+from utils import read_file, write_file, Graph, score_partitioning, random_partition, partition_count
 import numpy as np
-import random
 import datetime
+from crawl_utils import *
+import pickle
 
 graph = read_file('ca-GrQc.txt')
 num_partitions = 2
+init_partition_size = 10
 
 print("Random Partition Score: ", score_partitioning(graph, random_partition(graph, num_partitions)))
-
-def one_crawl(graph, v, steps):
-    vertices_reached = list()
-    for i in range(steps):
-        v = graph.get_connected_vertex(v)
-        vertices_reached.append(v)
-    return vertices_reached
-
-
-def init_partitions(graph, init_size=10, init_vert=0):
-    total_visit_count = [0] * graph.num_vertices
-    init_partitions = list()
-    for k in range(num_partitions):
-        print("Initializing partition ", k)
-        partition_visit_count = [0] * graph.num_vertices
-        init_verts = list()
-        init_verts.append(init_vert)
-        init_partitions.append(init_verts)
-        for j in range(init_size):
-            for i in range(1000):
-                verts = one_crawl(graph, init_vert, 20)
-                for v in verts:
-                    partition_visit_count[v] += 1
-
-            # What a hack!
-            flat_list = [item for sublist in init_partitions for item in sublist]
-            m = max(t for t in partition_visit_count if partition_visit_count.index(t) not in flat_list)
-            init_vert = partition_visit_count.index(m)
-            init_verts.append(init_vert)
-            init_partitions.pop()
-            init_partitions.append(init_verts)
-        total_visit_count = [sum(x) for x in zip(partition_visit_count, total_visit_count)]
-        init_vert = total_visit_count.index(min(total_visit_count))
-    return init_partitions
-
-def assign_partition(graph, partitioning, normalization, assign_v):
-    visit_count = np.zeros(graph.num_vertices)
-    crawls = 500 - int((sum(normalization)/graph.num_vertices)*400)
-    steps = 8 - int((sum(normalization)/graph.num_vertices)*3)
-    if assign_v % int(graph.num_vertices / 100) == 0:
-        print("Assigning partition ", assign_v, "out of", graph.num_vertices, "- ", int(assign_v / graph.num_vertices * 100), "%")
-        print("Crawls: ", crawls)
-        print("Steps: ", steps)
-        print("Partition sizes: ", normalization)
-    for i in range(crawls):
-        verts = one_crawl(graph, assign_v, steps)
-        for v in verts:
-            visit_count[v] += 1
-    # Which partition?
-    votes = np.zeros(num_partitions)
-    for i in range(len(visit_count)):
-        if partitioning[i] != -1:
-            votes[partitioning[i]] += visit_count[i]
-    if assign_v % int(graph.num_vertices / 100) == 0:
-        print(votes)
-    normalized_votes = np.divide(votes, normalization)
-    return(normalized_votes.argmax())
-
-
 
 start = datetime.datetime.now()
 
 partitioning = np.ones(graph.num_vertices, dtype=int) * -1
 
-init_partition_size = 50
-init_partitions = init_partitions(graph, init_partition_size)
-
+seed = 0
+blacklist = list()
+partition = list()
 for k in range(num_partitions):
-    partitioning[init_partitions[k]] = k
+    partition, seed = grow_monster_partition(graph, seed, init_partition_size, blacklist)
+    partitioning[partition] = k
+    blacklist.append(partition)
 
-normalization = np.ones(num_partitions) * init_partition_size
+normalization = partition_count(partitioning)
 
 for i in range(graph.num_vertices):
     if partitioning[i] == -1:
-        partitioning[i] = assign_partition(graph, partitioning, normalization, i)
-        normalization[partitioning[i]] += 1
+        partitioning[i] = assign_partition(graph, partitioning, normalization, i, num_partitions)
+        if partitioning[i] != -1:
+            normalization[partitioning[i]] += 1
 
 end = datetime.datetime.now()
 
 print("Partitioned in ", (end - start).total_seconds(), "seconds")
 
-print(normalization)
-print(score_partitioning(graph, partitioning))
+# Reassign bad vertices
+
+print("Counts before reassignment: ", normalization)
+print("Score before reassignment: ", score_partitioning(graph, partitioning))
+
+done = 0
+while not done:
+    majority = 0
+    nonmajority = 0
+    for v1 in range(graph.num_vertices):
+        match = 0
+        nonmatch = 0
+        for v2 in graph.edge_dict[v1]:
+            if partitioning[v1] == partitioning[v2]:
+                match += 1
+            else:
+                nonmatch += 1
+        if match > nonmatch:
+            majority += 1
+        else:
+            nonmajority += 1
+            partitioning[v1] = abs(partitioning[v1]-1)
+    print(majority)
+    print(nonmajority)
+    if nonmajority < 50:
+        done = 1
+    print("Counts after reassignment: ", partition_count(partitioning))
+    print("Score after reassignment: ", score_partitioning(graph, partitioning))
+
+
+pickle.dump( partitioning, open( "save.p", "wb"))
+
+
+
+
+
+#
+# partitioning = np.ones(graph.num_vertices, dtype=int) * -1
+#
+# init_partition_size = 20
+# init_partitions = init_partitions(graph, init_partition_size)
+#
+# for k in range(num_partitions):
+#     partitioning[init_partitions[k]] = k
+#
+# normalization = np.ones(num_partitions) * init_partition_size
+#
+# for i in range(graph.num_vertices):
+#     if partitioning[i] == -1:
+#         partitioning[i] = assign_partition(graph, partitioning, normalization, i)
+#         normalization[partitioning[i]] += 1
+
 
 
 
