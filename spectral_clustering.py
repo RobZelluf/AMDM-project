@@ -1,7 +1,7 @@
 from sklearn.cluster import SpectralClustering
 from utils import *
 
-graph = read_file('ca-GrQc.txt')
+graph = read_file('CA-GrQc.txt')
 
 # Spectral Clustering
 sc = SpectralClustering(2, affinity='precomputed', n_init=100)

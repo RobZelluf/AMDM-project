@@ -2,6 +2,7 @@ import numpy as np
 import datetime
 from collections import defaultdict
 import random
+import networkx as nx
 
 
 class Graph:
@@ -17,17 +18,17 @@ class Graph:
         self.edge_dict = defaultdict(list)
         self.build_edge_dict()
 
-        # try:
-        #     self.adjacency_matrix = np.zeros((self.num_vertices, self.num_vertices))
-        #     self.laplacian = np.zeros((self.num_vertices, self.num_vertices))
-        #     self.build_adjacency_matrix()
-        #     self.build_laplacian()
-        #
-        #     for i in range(self.num_vertices):
-        #         assert sum(self.laplacian[i]) == 0
-        #
-        # except:
-        #     print("Too much data to build matrices!!")
+        try:
+            self.adjacency_matrix = np.zeros((self.num_vertices, self.num_vertices))
+            self.laplacian = np.zeros((self.num_vertices, self.num_vertices))
+            self.build_adjacency_matrix()
+            self.build_laplacian()
+
+            for i in range(self.num_vertices):
+                assert sum(self.laplacian[i]) == 0
+
+        except:
+            print("Too much data to build matrices!!")
 
     def build_map(self):
         counter = 0
@@ -108,12 +109,14 @@ def write_file(graphid, graph, partitioning, num_partitions):
             f.writelines("" + str(vertex) + " " + str(partitioning[vertex]) + "\n")
     f.close()
 
+
 def random_partition(graph, k):
     partitions = np.zeros(graph.num_vertices)
     for vertex in graph.vertices:
         partitions[vertex] = int(np.random.randint(0, k))
 
     return list(partitions)
+
 
 def score_partitioning(graph, partitions):
     scores = np.zeros(int(max(partitions) + 1))
@@ -141,3 +144,31 @@ def partition_count(partitioning):
         if(partitioning[i] != -1):
             counts[partitioning[i]] += 1
     return counts
+
+
+def create_nx_graph(filename='CA-GrQc.txt'):
+    print(filename)
+
+    graph = nx.Graph()
+    vertices = []
+    start = datetime.datetime.now()
+    with open('data/' + filename, 'r') as f:
+        i = 0
+        lines = f.readlines()
+        for line in lines:
+            if i % int(len(lines) / 10) == 0:
+                print("Reading line", i, "out of", len(lines), "- ", int(i / len(lines) * 100), "%")
+
+            i += 1
+
+            if line[0] == "#" or line[0] == " ":
+                continue
+
+            V = [int(v) for v in line.split()]
+            vertices.extend(V)
+            graph.add_edge(V[0], V[1])
+
+    graph.add_node_from(V)
+
+    return graph
+

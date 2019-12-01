@@ -1,13 +1,14 @@
 import numpy as np
 import pandas as pd
 import pickle
-from utils import read_file, Graph
+from utils import read_file, create_nx_graph
+import networkx as nx
 
 filename = 'roadNet-CA.txt'
 
-graph = read_file()
+graph = create_nx_graph(filename)
 
-print(graph.get_connected_vertex(50))
+nx.draw(graph)
 
 
 
