@@ -26,30 +26,35 @@ start = datetime.datetime.now()
 
 partitioning = np.ones(graph.num_vertices, dtype=int) * -1
 
+threshold = 1 / num_partitions
+
 seed = 0
-blacklist = list()
-partition = list()
+
+# blacklist = list()
+# partition = list()
 # for k in range(num_partitions):
 #     partition, seed = grow_monster_partition(graph, seed, init_partition_size, blacklist)
 #     partitioning[partition] = k
 #     blacklist.append(partition)
 
-init_partitions = init_partitions(graph, num_partitions, 10, 0)
-print(init_partitions)
+init_partitions = init_partitions(graph, num_partitions, init_partition_size, seed)
+
 for k in range(num_partitions):
     partitioning[init_partitions[k]] = k
 
 normalization = partition_count(partitioning)
 
 for i in range(graph.num_vertices):
+    if i % 5000 == 0:
+        pickle.dump(partitioning, open("save.p", "wb"))
     if partitioning[i] == -1:
-        partitioning[i] = assign_partition(graph, partitioning, normalization, i, num_partitions, threshold=0.3)
+        partitioning[i] = assign_partition(graph, partitioning, normalization, i, num_partitions, threshold)
         if partitioning[i] != -1:
             normalization[partitioning[i]] += 1
 
 for i in range(graph.num_vertices):  # Classify edge cases
     if partitioning[i] == -1:
-        partitioning[i] = assign_partition(graph, partitioning, normalization, i, num_partitions, threshold=0)
+        partitioning[i] = assign_partition(graph, partitioning, normalization, i, num_partitions, 0)
         if partitioning[i] != -1:
             normalization[partitioning[i]] += 1
 
@@ -84,10 +89,7 @@ for i in range(3):
     print("Counts after reassignment: ", partition_count(partitioning))
     print("Score after reassignment: ", score_partitioning(graph, partitioning))
 
-
-pickle.dump( partitioning, open( "save.p", "wb"))
-
-
+write_file(filename, graph, partitioning, num_partitions)
 
 
 
