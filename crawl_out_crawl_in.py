@@ -4,15 +4,9 @@ import datetime
 from crawl_utils import *
 import pickle
 
-graph = read_file('ca-GrQc.txt')
-num_partitions = 2
+graph = read_file('Oregon-1.txt')
+num_partitions = 5
 init_partition_size = 10
-
-# TEST VISUAL PARTITION
-
-partitioning = np.zeros(graph.num_vertices, dtype=int)
-partitioning[[3162,136,2565,1207,3205,1895,526,3126,1010,3505,1980,3221,4084,3819,224,2922]] = 1
-print(score_partitioning(graph,partitioning))
 
 
 print("Random Partition Score: ", score_partitioning(graph, random_partition(graph, num_partitions)))
@@ -24,16 +18,21 @@ partitioning = np.ones(graph.num_vertices, dtype=int) * -1
 seed = 0
 blacklist = list()
 partition = list()
+# for k in range(num_partitions):
+#     partition, seed = grow_monster_partition(graph, seed, init_partition_size, blacklist)
+#     partitioning[partition] = k
+#     blacklist.append(partition)
+
+init_partitions = init_partitions(graph, num_partitions, 10, 0)
+print(init_partitions)
 for k in range(num_partitions):
-    partition, seed = grow_monster_partition(graph, seed, init_partition_size, blacklist)
-    partitioning[partition] = k
-    blacklist.append(partition)
+    partitioning[init_partitions[k]] = k
 
 normalization = partition_count(partitioning)
 
 for i in range(graph.num_vertices):
     if partitioning[i] == -1:
-        partitioning[i] = assign_partition(graph, partitioning, normalization, i, num_partitions, threshold=0.5)
+        partitioning[i] = assign_partition(graph, partitioning, normalization, i, num_partitions, threshold=0.3)
         if partitioning[i] != -1:
             normalization[partitioning[i]] += 1
 
@@ -53,7 +52,7 @@ print("Counts before reassignment: ", normalization)
 print("Score before reassignment: ", score_partitioning(graph, partitioning))
 
 done = 0
-while not done:
+for i in range(3):
     majority = 0
     nonmajority = 0
     for v1 in range(graph.num_vertices):
@@ -71,8 +70,6 @@ while not done:
             partitioning[v1] = abs(partitioning[v1]-1)
     print(majority)
     print(nonmajority)
-    if nonmajority < 50:
-        done = 1
     print("Counts after reassignment: ", partition_count(partitioning))
     print("Score after reassignment: ", score_partitioning(graph, partitioning))
 
