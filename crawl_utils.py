@@ -65,7 +65,7 @@ def init_partitions(graph, num_partitions, init_size=10, seed=0):
         init_partitions.append(partition_verts)
         for j in range(init_size):
             for i in range(1000):
-                verts = one_crawl(graph, init_vert, 8)
+                verts = one_crawl(graph, init_vert, 3)
                 for v in verts:
                     partition_visit_count[v] += 1
 
@@ -84,7 +84,7 @@ def init_partitions(graph, num_partitions, init_size=10, seed=0):
 
 def assign_partition(graph, partitioning, normalization, assign_v, num_partitions, threshold=0):
     visit_count = np.zeros(graph.num_vertices)
-    crawls = 1000 - int((sum(normalization) / graph.num_vertices) * 900)
+    crawls = 600 - int((sum(normalization) / graph.num_vertices) * 500)
     steps = 4 - int((sum(normalization) / graph.num_vertices) * 3)
     if assign_v % int(graph.num_vertices / 100) == 0:
         print("Assigning partition ", assign_v, "out of", graph.num_vertices, "- ",
