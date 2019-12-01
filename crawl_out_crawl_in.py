@@ -3,10 +3,20 @@ import numpy as np
 import datetime
 from crawl_utils import *
 import pickle
+import os
 
-graph = read_file('Oregon-1.txt')
-num_partitions = 5
-init_partition_size = 10
+DIRs = [x for x in os.listdir("data/")]
+i = 0
+for DIR in DIRs:
+    print(i, DIR)
+    i += 1
+
+data = int(input("Model number:"))
+num_partitions = int(input("Number of partitions:"))
+init_partition_size = int(input("Initial partition size:"))
+
+filename = DIRs[data]
+graph = read_file(filename)
 
 
 print("Random Partition Score: ", score_partitioning(graph, random_partition(graph, num_partitions)))
