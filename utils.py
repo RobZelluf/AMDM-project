@@ -85,6 +85,7 @@ def read_file(filename='CA-GrQc.txt'):
             i += 1
 
             if line[0] == "#" or line[0] == " ":
+                num_partitions = int(line.split(" ")[4])
                 continue
 
             V = [int(v) for v in line.split()]
@@ -99,7 +100,7 @@ def read_file(filename='CA-GrQc.txt'):
     print("# edges:", len(edges))
 
     graph = Graph(vertices, edges)
-    return graph
+    return graph, num_partitions
 
 
 def write_file(graphid, graph, partitioning, num_partitions):

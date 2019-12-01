@@ -12,11 +12,12 @@ for DIR in DIRs:
     i += 1
 
 data = int(input("Model number:"))
-num_partitions = int(input("Number of partitions:"))
 init_partition_size = int(input("Initial partition size:"))
 
 filename = DIRs[data]
-graph = read_file(filename)
+print(filename)
+graph, num_partitions = read_file(filename)
+print("Number of partitions:", num_partitions)
 
 
 print("Random Partition Score: ", score_partitioning(graph, random_partition(graph, num_partitions)))
