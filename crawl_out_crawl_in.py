@@ -63,35 +63,36 @@ end = datetime.datetime.now()
 
 print("Partitioned in ", (end - start).total_seconds(), "seconds")
 
-# Reassign bad vertices
-
-print("Counts before reassignment: ", normalization)
-print("Score before reassignment: ", score_partitioning(graph, partitioning))
-
-done = 0
-for i in range(3):
-    majority = 0
-    nonmajority = 0
-    for v1 in range(graph.num_vertices):
-        match = 0
-        nonmatch = 0
-        for v2 in graph.edge_dict[v1]:
-            if partitioning[v1] == partitioning[v2]:
-                match += 1
-            else:
-                nonmatch += 1
-        if match > nonmatch:
-            majority += 1
-        else:
-            nonmajority += 1
-            partitioning[v1] = abs(partitioning[v1]-1)
-    print(majority)
-    print(nonmajority)
-    print("Counts after reassignment: ", partition_count(partitioning))
-    print("Score after reassignment: ", score_partitioning(graph, partitioning))
+print("Counts: ", normalization)
+print("Scores: ", score_partitioning(graph, partitioning))
 
 write_file(filename, graph, partitioning, num_partitions)
 
+
+
+# Reassign bad vertices
+#
+# done = 0
+# for i in range(3):
+#     majority = 0
+#     nonmajority = 0
+#     for v1 in range(graph.num_vertices):
+#         match = 0
+#         nonmatch = 0
+#         for v2 in graph.edge_dict[v1]:
+#             if partitioning[v1] == partitioning[v2]:
+#                 match += 1
+#             else:
+#                 nonmatch += 1
+#         if match > nonmatch:
+#             majority += 1
+#         else:
+#             nonmajority += 1
+#             partitioning[v1] = abs(partitioning[v1]-1)
+#     print(majority)
+#     print(nonmajority)
+#     print("Counts after reassignment: ", partition_count(partitioning))
+#     print("Score after reassignment: ", score_partitioning(graph, partitioning))
 
 
 #
