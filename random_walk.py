@@ -6,8 +6,8 @@ import datetime
 from random_partitioning import random_partition
 import pickle as p
 
-graph = read_file()
-k = 5
+graph, num_partitions = read_file()
+k = num_partitions
 
 walk_length = 1
 iterations = 100

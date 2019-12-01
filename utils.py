@@ -19,8 +19,8 @@ class Graph:
         self.build_edge_dict()
 
         try:
-            self.adjacency_matrix = np.zeros((self.num_vertices, self.num_vertices))
-            self.laplacian = np.zeros((self.num_vertices, self.num_vertices))
+            self.adjacency_matrix = np.zeros((self.num_vertices, self.num_vertices), dtype=int)
+            self.laplacian = np.zeros((self.num_vertices, self.num_vertices), dtype=int)
             self.build_adjacency_matrix()
             self.build_laplacian()
 
@@ -64,9 +64,9 @@ class Graph:
             self.adjacency_matrix[id2, id1] = 1
 
     def build_laplacian(self):
-        laplacian = self.adjacency_matrix.copy()
-        for j in range(self.num_vertices):
-            laplacian[j][j] = sum(self.adjacency_matrix[j, :])  # diagonal entries are degree of vertex
+        laplacian = np.diag(np.sum(self.adjacency_matrix, axis=1))
+        laplacian -= self.adjacency_matrix.copy()
+        self.laplacian = laplacian
 
 
 def read_file(filename='CA-GrQc.txt'):
