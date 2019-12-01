@@ -11,7 +11,7 @@ vals = vals[np.argsort(vals)]
 
 # kmeans on first three vectors with nonzero eigenvalues
 kmeans = KMeans(n_clusters=num_partitions)
-kmeans.fit(vecs[:, 1:10])
+kmeans.fit(vecs[:, 1:20])
 
 labels = kmeans.labels_
 for i in range(num_partitions):
