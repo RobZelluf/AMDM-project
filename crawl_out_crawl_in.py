@@ -5,6 +5,7 @@ from crawl_utils import *
 import pickle
 import os
 
+# Input prompt for filename
 DIRs = [x for x in os.listdir("data/")]
 i = 0
 for DIR in DIRs:
@@ -15,9 +16,9 @@ data = int(input("Model number:"))
 init_partition_size = int(input("Initial partition size:"))
 
 filename = DIRs[data]
-print(filename)
 graph, num_partitions = read_file(filename)
 print("Number of partitions:", num_partitions)
+##########
 
 
 print("Random Partition Score: ", score_partitioning(graph, random_partition(graph, num_partitions)))
