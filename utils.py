@@ -60,12 +60,10 @@ class Graph:
             self.adjacency_matrix[id2, id1] = 1
 
     def build_laplacian(self):
-        for v in range(self.num_vertices):
-            self.laplacian[v, v] = np.sum(self.adjacency_matrix[v])
-
-        for i in range(self.num_vertices):
-            for j in range(self.num_vertices):
-                self.laplacian[i, j] = -self.adjacency_matrix[i, j]
+        diags = self.adjacency_matrix.sum(axis=1)
+        laplacian = sparse.spdiags(diags.flatten(), [0], self.num_vertices, self.num_vertices, format='csr')
+        laplacian -= self.adjacency_matrix.copy()
+        self.laplacian = laplacian
 
 
 def read_file(filename='CA-GrQc.txt'):
