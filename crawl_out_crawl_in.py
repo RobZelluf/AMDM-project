@@ -18,7 +18,7 @@ init_partition_size = int(input("Initial partition size:"))
 filename = DIRs[data]
 graph, num_partitions = read_file(filename)
 print("Number of partitions:", num_partitions)
-##########
+##########1
 
 
 print("Random Partition Score: ", score_partitioning(graph, random_partition(graph, num_partitions)))
