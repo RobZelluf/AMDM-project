@@ -1,6 +1,8 @@
 import numpy as np
 import datetime
 from collections import defaultdict
+from scipy.sparse import lil_matrix
+import scipy.sparse as sparse
 import random
 import networkx as nx
 
@@ -18,17 +20,11 @@ class Graph:
         self.edge_dict = defaultdict(list)
         self.build_edge_dict()
 
-        try:
-            self.adjacency_matrix = np.zeros((self.num_vertices, self.num_vertices), dtype=int)
-            self.laplacian = np.zeros((self.num_vertices, self.num_vertices), dtype=int)
-            self.build_adjacency_matrix()
-            self.build_laplacian()
+        self.adjacency_matrix = lil_matrix((self.num_vertices, self.num_vertices))
+        self.build_adjacency_matrix()
 
-            for i in range(self.num_vertices):
-                assert sum(self.laplacian[i]) == 0
-
-        except:
-            print("Too much data to build matrices!!")
+        self.laplacian = lil_matrix((self.num_vertices, self.num_vertices))
+        self.build_laplacian()
 
     def build_map(self):
         counter = 0
@@ -64,9 +60,12 @@ class Graph:
             self.adjacency_matrix[id2, id1] = 1
 
     def build_laplacian(self):
-        laplacian = np.diag(np.sum(self.adjacency_matrix, axis=1))
-        laplacian -= self.adjacency_matrix.copy()
-        self.laplacian = laplacian
+        for v in range(self.num_vertices):
+            self.laplacian[v, v] = np.sum(self.adjacency_matrix[v])
+
+        for i in range(self.num_vertices):
+            for j in range(self.num_vertices):
+                self.laplacian[i, j] = -self.adjacency_matrix[i, j]
 
 
 def read_file(filename='CA-GrQc.txt'):
@@ -95,11 +94,12 @@ def read_file(filename='CA-GrQc.txt'):
     vertices = list(set(vertices))
     end = datetime.datetime.now()
 
+    graph = Graph(vertices, edges)
+
     print("File read in", (end - start).total_seconds(), "seconds")
     print("# vertices:", len(vertices))
     print("# edges:", len(edges))
 
-    graph = Graph(vertices, edges)
     return graph, num_partitions
 
 

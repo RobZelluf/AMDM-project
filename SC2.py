@@ -1,10 +1,11 @@
 from utils import *
 from sklearn.cluster import KMeans
+from scipy.sparse.linalg import eigsh
 
-graph, num_partitions = read_file("Oregon-1.txt")
+graph, num_partitions = read_file()
 laplacian = graph.laplacian
 
-vals, vecs = np.linalg.eigh(graph.laplacian)
+vals, vecs = eigsh(graph.laplacian)
 
 vecs = vecs[:, np.argsort(vals)]
 vals = vals[np.argsort(vals)]
