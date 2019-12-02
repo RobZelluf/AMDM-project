@@ -2,11 +2,24 @@ from utils import *
 from sklearn.cluster import KMeans
 from scipy.sparse.linalg import eigsh
 import numpy as np
+import os
 
-graph, num_partitions = read_file()
+# Input prompt for filename
+DIRs = [x for x in os.listdir("data/")]
+i = 0
+for DIR in DIRs:
+    print(i, DIR)
+    i += 1
+
+data = int(input("Model number:"))
+
+filename = DIRs[data]
+graph, num_partitions = read_file(filename)
+print("Number of partitions:", num_partitions)
+##########
+
 laplacian = graph.laplacian
-
-vals, vecs = eigsh(laplacian, graph.num_vertices - 1)
+vals, vecs = eigsh(laplacian, graph.num_vertices / 2, which="SM")
 
 vecs = vecs[:, np.argsort(vals)]
 vals = vals[np.argsort(vals)]
