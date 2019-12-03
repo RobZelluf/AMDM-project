@@ -17,12 +17,13 @@ output_name = input("Output name:")
 filename = DIRs[data]
 graph, num_partitions = read_file(filename)
 print("Number of partitions:", num_partitions)
+num_eigenvectors = int(input("Number of eigenvectors:"))
 ##########
 
 laplacian = graph.laplacian
 
 print("Calculating eigenvalues and eigenvectors..")
-vals, vecs = eigsh(laplacian, num_partitions * 2, which="SM")
+vals, vecs = eigsh(laplacian, num_eigenvectors, which="SM")
 
 vecs = vecs[:, np.argsort(vals)]
 vals = vals[np.argsort(vals)]
