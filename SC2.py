@@ -3,6 +3,7 @@ from sklearn.cluster import KMeans
 from scipy.sparse.linalg import eigsh
 import numpy as np
 import os
+import pickle as p
 
 # Input prompt for filename
 DIRs = [x for x in os.listdir("data/")]
@@ -29,6 +30,10 @@ vals, vecs = eigsh(laplacian, max_num_eigenvectors, which="SM")
 
 vecs = vecs[:, np.argsort(vals)]
 vals = vals[np.argsort(vals)]
+
+with open("EV/" + filename[:-4] + ".p", "wb") as f:
+    p.dump([vecs, vals], f)
+
 
 for num_eigenvectors in range(num_partitions, max_num_eigenvectors, int((max_num_eigenvectors - num_partitions) / 10)):
     print("Running k-means", k_means_iterations, "times for", num_eigenvectors, "eigenvectors.")
