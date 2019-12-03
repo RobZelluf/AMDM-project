@@ -102,7 +102,7 @@ def read_file(filename='CA-GrQc.txt'):
 
 
 def write_file(graphid, graph, partitioning, num_partitions):
-    with open('data/' + str(graphid) + '.output', 'w') as f:
+    with open('output/' + str(graphid) + '.output', 'w') as f:
         f.writelines("# " + str(graphid) + " " + str(graph.num_vertices) + " " + str(graph.num_edges) + " " + str(num_partitions) + "\n")
         for vertex in graph.vertices:
             f.writelines("" + str(vertex) + " " + str(partitioning[vertex]) + "\n")

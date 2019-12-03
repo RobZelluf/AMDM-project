@@ -12,6 +12,7 @@ for DIR in DIRs:
     i += 1
 
 data = int(input("Model number:"))
+output_name = input("Output name:")
 
 filename = DIRs[data]
 graph, num_partitions = read_file(filename)
@@ -26,14 +27,21 @@ vals, vecs = eigsh(laplacian, num_partitions + 5, which="SM")
 vecs = vecs[:, np.argsort(vals)]
 vals = vals[np.argsort(vals)]
 
-# kmeans on first three vectors with nonzero eigenvalues
-print("Running k-means..")
-kmeans = KMeans(n_clusters=num_partitions)
-kmeans.fit(vecs[:, 1:])
+count = 0
+best_score = 999
+while True:
+    # kmeans on first three vectors with nonzero eigenvalues
+    print("Running k-means..")
+    kmeans = KMeans(n_clusters=num_partitions)
+    kmeans.fit(vecs)
 
-labels = kmeans.labels_
-for i in range(num_partitions):
-    print("Num", i, " - ", len([x for x in labels if x == i]))
+    labels = kmeans.labels_
+    for i in range(num_partitions):
+        print("Num", i, " - ", len([x for x in labels if x == i]))
 
-score = score_partitioning(graph, labels)
-print("Score:", score)
+    score = score_partitioning(graph, labels)
+    print("Score:", score)
+
+    if score < best_score:
+        print("New best score!")
+        write_file(output_name, graph, labels, num_partitions)
