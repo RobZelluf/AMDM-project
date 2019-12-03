@@ -19,8 +19,14 @@ filename_output = "outputs/" + output_name
 
 # Input prompt for filename
 DIRs = [x for x in os.listdir("data/")]
+i = 0
+for DIR in DIRs:
+    print(i, DIR)
+    i += 1
 
-data_name = difflib.get_close_matches(output_name, DIRs)[0]
+data_num = int(input("Output number:"))
+data_name = DIRs[data_num]
+
 graph, _ = read_file(data_name)
 
 partitioning = []
