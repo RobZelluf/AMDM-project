@@ -41,11 +41,13 @@ while min_score > 0.61:
         print("Num", i, " - ", len([x for x in labels if x == i]))
 
     score = score_partitioning(graph, labels)
-    print("Score:", score)
 
     if score < min_score:
         min_score = score
         final_partitioning = labels.copy()
+
+    print("Score:", score)
+    print("Min Score: ", min_score)
     #
     # partitioning = reassign_partitions(graph, labels, num_partitions, score)
     # print("Score after reassignment: ", score_partitioning(graph, partitioning))
