@@ -22,7 +22,7 @@ print("Number of partitions:", num_partitions)
 laplacian = graph.laplacian
 
 print("Calculating eigenvalues and eigenvectors..")
-vals, vecs = eigsh(laplacian, num_partitions + 5, which="SM")
+vals, vecs = eigsh(laplacian, num_partitions * 2, which="SM")
 
 vecs = vecs[:, np.argsort(vals)]
 vals = vals[np.argsort(vals)]
@@ -33,7 +33,7 @@ while True:
     count += 1
     # kmeans on first three vectors with nonzero eigenvalues
     kmeans = KMeans(n_clusters=num_partitions)
-    kmeans.fit(vecs)
+    kmeans.fit(vecs[:, 1:])
 
     labels = kmeans.labels_
     score = score_partitioning(graph, labels)
