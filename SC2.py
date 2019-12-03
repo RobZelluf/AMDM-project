@@ -30,12 +30,12 @@ laplacian = graph.laplacian
 min_score = 1
 
 while min_score > 0.61:
-    vals, vecs = np.linalg.eigh(graph.laplacian)
+    vals, vecs = np.linalg.eig(graph.laplacian)
     vecs = vecs[:, np.argsort(vals)]
     vals = vals[np.argsort(vals)]
     # kmeans on first three vectors with nonzero eigenvalues
     kmeans = KMeans(n_clusters=num_partitions)
-    kmeans.fit(vecs[:, 1:12])
+    kmeans.fit(vecs[:, 1:10])
     labels = kmeans.labels_
     for i in range(num_partitions):
         print("Num", i, " - ", len([x for x in labels if x == i]))
