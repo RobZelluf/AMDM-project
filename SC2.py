@@ -19,7 +19,7 @@ graph, num_partitions = read_file(filename)
 print("Number of partitions:", num_partitions)
 init_num_eigenvectors = int(input("Initial number of eigenvectors"))
 num_eigenvectors = init_num_eigenvectors
-k_means_iterations = 500
+k_means_iterations = 5000
 ##########
 
 laplacian = graph.laplacian
