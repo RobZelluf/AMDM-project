@@ -30,8 +30,8 @@ vals = vals[np.argsort(vals)]
 count = 0
 best_score = 999
 while True:
+    count += 1
     # kmeans on first three vectors with nonzero eigenvalues
-    print("Running k-means..")
     kmeans = KMeans(n_clusters=num_partitions)
     kmeans.fit(vecs)
 
@@ -40,5 +40,5 @@ while True:
 
     if score < best_score:
         best_score = score
-        print("New best score:", best_score)
+        print(count, "- New best score:", best_score)
         write_file(output_name, graph, labels, num_partitions)
