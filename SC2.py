@@ -17,29 +17,34 @@ output_name = input("Output name:")
 filename = DIRs[data]
 graph, num_partitions = read_file(filename)
 print("Number of partitions:", num_partitions)
-num_eigenvectors = int(input("Number of eigenvectors:"))
+init_num_eigenvectors = num_partitions * 2
+num_eigenvectors = init_num_eigenvectors
+k_means_iterations = 500
 ##########
 
 laplacian = graph.laplacian
-
-print("Calculating eigenvalues and eigenvectors..")
-vals, vecs = eigsh(laplacian, num_eigenvectors, which="SM")
-
-vecs = vecs[:, np.argsort(vals)]
-vals = vals[np.argsort(vals)]
-
-count = 0
 best_score = 999
+
 while True:
-    count += 1
-    # kmeans on first three vectors with nonzero eigenvalues
-    kmeans = KMeans(n_clusters=num_partitions)
-    kmeans.fit(vecs[:, 1:])
+    print("Calculating", num_eigenvectors, "eigenvalues and eigenvectors...")
+    vals, vecs = eigsh(laplacian, num_eigenvectors, which="SM")
 
-    labels = kmeans.labels_
-    score = score_partitioning(graph, labels)
+    vecs = vecs[:, np.argsort(vals)]
+    vals = vals[np.argsort(vals)]
 
-    if score < best_score:
-        best_score = score
-        print(count, "- New best score:", best_score)
-        write_file(output_name, graph, labels, num_partitions)
+    count = 0
+    for it in range(k_means_iterations):
+        count += 1
+        # kmeans on first three vectors with nonzero eigenvalues
+        kmeans = KMeans(n_clusters=num_partitions)
+        kmeans.fit(vecs[:, 1:])
+
+        labels = kmeans.labels_
+        score = score_partitioning(graph, labels)
+
+        if score < best_score:
+            best_score = score
+            print(count, "- New best score:", best_score)
+            write_file(output_name, graph, labels, num_partitions)
+
+    num_eigenvectors = int(num_eigenvectors * 1.1)
