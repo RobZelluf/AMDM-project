@@ -19,14 +19,17 @@ print("Number of partitions:", num_partitions)
 ##########
 
 laplacian = graph.laplacian
-vals, vecs = eigsh(laplacian, graph.num_vertices / 2, which="SM")
+
+print("Calculating eigenvalues and eigenvectors..")
+vals, vecs = eigsh(laplacian, num_partitions + 5, which="SM")
 
 vecs = vecs[:, np.argsort(vals)]
 vals = vals[np.argsort(vals)]
 
 # kmeans on first three vectors with nonzero eigenvalues
+print("Running k-means..")
 kmeans = KMeans(n_clusters=num_partitions)
-kmeans.fit(vecs[:, 1:10])
+kmeans.fit(vecs[:, 1:])
 
 labels = kmeans.labels_
 for i in range(num_partitions):
