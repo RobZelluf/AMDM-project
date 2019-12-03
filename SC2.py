@@ -17,21 +17,21 @@ output_name = input("Output name:")
 filename = DIRs[data]
 graph, num_partitions = read_file(filename)
 print("Number of partitions:", num_partitions)
-init_num_eigenvectors = int(input("Initial number of eigenvectors"))
-num_eigenvectors = init_num_eigenvectors
+max_num_eigenvectors = int(input("Maximum number of eigenvectors"))
 k_means_iterations = 500
 ##########
 
 laplacian = graph.laplacian
 best_score = 999
 
-while True:
-    print("Calculating", num_eigenvectors, "eigenvalues and eigenvectors...")
-    vals, vecs = eigsh(laplacian, num_eigenvectors, which="SM")
+print("Calculating", max_num_eigenvectors, "eigenvalues and eigenvectors...")
+vals, vecs = eigsh(laplacian, max_num_eigenvectors, which="SM")
 
-    vecs = vecs[:, np.argsort(vals)]
-    vals = vals[np.argsort(vals)]
+vecs = vecs[:, np.argsort(vals)]
+vals = vals[np.argsort(vals)]
 
+for num_eigenvectors in range(num_partitions, max_num_eigenvectors):
+    print("Running k-means", k_means_iterations, "times for", num_eigenvectors, "eigenvectors.")
     count = 0
     for it in range(k_means_iterations):
         count += 1
@@ -46,5 +46,3 @@ while True:
             best_score = score
             print(count, "- New best score:", best_score)
             write_file(output_name, filename, graph, labels, num_partitions)
-
-    num_eigenvectors = int(num_eigenvectors * 1.1)
