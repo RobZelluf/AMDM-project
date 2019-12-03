@@ -30,7 +30,7 @@ vals, vecs = eigsh(laplacian, max_num_eigenvectors, which="SM")
 vecs = vecs[:, np.argsort(vals)]
 vals = vals[np.argsort(vals)]
 
-for num_eigenvectors in range(num_partitions, max_num_eigenvectors):
+for num_eigenvectors in range(num_partitions, max_num_eigenvectors, int((max_num_eigenvectors - num_partitions) / 10)):
     print("Running k-means", k_means_iterations, "times for", num_eigenvectors, "eigenvectors.")
     count = 0
     for it in range(k_means_iterations):
