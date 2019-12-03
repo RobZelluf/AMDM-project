@@ -1,6 +1,6 @@
 from utils import *
-import numpy as np
 from sklearn.cluster import KMeans
+import numpy as np
 
 #
 # def reassign_partitions(graph, partitioning, k, min_score):
@@ -35,7 +35,7 @@ while min_score > 0.61:
     vals = vals[np.argsort(vals)]
     # kmeans on first three vectors with nonzero eigenvalues
     kmeans = KMeans(n_clusters=num_partitions)
-    kmeans.fit(vecs[:, 1:20])
+    kmeans.fit(vecs[:, 1:12])
     labels = kmeans.labels_
     for i in range(num_partitions):
         print("Num", i, " - ", len([x for x in labels if x == i]))
