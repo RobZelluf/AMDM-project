@@ -66,7 +66,7 @@ print("Partitioned in ", (end - start).total_seconds(), "seconds")
 print("Counts: ", normalization)
 print("Scores: ", score_partitioning(graph, partitioning))
 
-write_file(filename, graph, partitioning, num_partitions)
+write_file(filename, "", graph, partitioning, num_partitions)
 
 
 

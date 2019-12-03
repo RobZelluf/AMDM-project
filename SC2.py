@@ -19,7 +19,7 @@ graph, num_partitions = read_file(filename)
 print("Number of partitions:", num_partitions)
 init_num_eigenvectors = int(input("Initial number of eigenvectors"))
 num_eigenvectors = init_num_eigenvectors
-k_means_iterations = 5000
+k_means_iterations = 500
 ##########
 
 laplacian = graph.laplacian
@@ -45,6 +45,6 @@ while True:
         if score < best_score:
             best_score = score
             print(count, "- New best score:", best_score)
-            write_file(output_name, graph, labels, num_partitions)
+            write_file(output_name, filename, graph, labels, num_partitions)
 
     num_eigenvectors = int(num_eigenvectors * 1.1)

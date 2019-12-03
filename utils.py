@@ -101,8 +101,8 @@ def read_file(filename='CA-GrQc.txt'):
     return graph, num_partitions
 
 
-def write_file(graphid, graph, partitioning, num_partitions):
-    with open('outputs/' + str(graphid) + '.output', 'w') as f:
+def write_file(filename, graphid, graph, partitioning, num_partitions):
+    with open('outputs/' + str(filename) + '.output', 'w') as f:
         f.writelines("# " + str(graphid) + " " + str(graph.num_vertices) + " " + str(graph.num_edges) + " " + str(num_partitions) + "\n")
         for vertex in graph.vertices:
             f.writelines("" + str(vertex) + " " + str(partitioning[vertex]) + "\n")
@@ -143,8 +143,6 @@ def partition_count(partitioning):
         if(partitioning[i] != -1):
             counts[partitioning[i]] += 1
     return counts
-
-
 
 
 def create_nx_graph(filename='CA-GrQc.txt'):
