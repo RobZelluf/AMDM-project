@@ -42,7 +42,7 @@ for num_eigenvectors in range(num_partitions, max_num_eigenvectors, int((max_num
         count += 1
         # kmeans on first three vectors with nonzero eigenvalues
         kmeans = KMeans(n_clusters=num_partitions)
-        kmeans.fit(vecs[:, 1:])
+        kmeans.fit(vecs[:, 1:num_eigenvectors + 1])
 
         labels = kmeans.labels_
         score = score_partitioning(graph, labels)
