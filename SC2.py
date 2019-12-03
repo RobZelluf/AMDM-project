@@ -43,5 +43,6 @@ while True:
     print("Score:", score)
 
     if score < best_score:
+        best_score = score
         print("New best score!")
         write_file(output_name, graph, labels, num_partitions)
