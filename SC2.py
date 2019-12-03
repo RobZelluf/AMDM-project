@@ -1,35 +1,39 @@
 from utils import *
 from sklearn.cluster import KMeans
+from scipy.sparse.linalg import eigsh
 import numpy as np
+import os
 
-filename = "Oregon-1.txt"
+# Input prompt for filename
+DIRs = [x for x in os.listdir("data/")]
+i = 0
+for DIR in DIRs:
+    print(i, DIR)
+    i += 1
+
+data = int(input("Model number:"))
+
+filename = DIRs[data]
 graph, num_partitions = read_file(filename)
+print("Number of partitions:", num_partitions)
+##########
+
 laplacian = graph.laplacian
 
+print("Calculating eigenvalues and eigenvectors..")
+vals, vecs = eigsh(laplacian, num_partitions + 5, which="SM")
 
-min_score = 1
+vecs = vecs[:, np.argsort(vals)]
+vals = vals[np.argsort(vals)]
 
-while min_score > 0.61:
-    vals, vecs = np.linalg.eigh(graph.laplacian)
-    vecs = vecs[:, np.argsort(vals)]
-    vals = vals[np.argsort(vals)]
-    # kmeans on first three vectors with nonzero eigenvalues
-    kmeans = KMeans(n_clusters=num_partitions)
-    kmeans.fit(vecs[:, 1:10])
-    labels = kmeans.labels_
-    for i in range(num_partitions):
-        print("Num", i, " - ", len([x for x in labels if x == i]))
+# kmeans on first three vectors with nonzero eigenvalues
+print("Running k-means..")
+kmeans = KMeans(n_clusters=num_partitions)
+kmeans.fit(vecs[:, 1:])
 
-    score = score_partitioning(graph, labels)
+labels = kmeans.labels_
+for i in range(num_partitions):
+    print("Num", i, " - ", len([x for x in labels if x == i]))
 
-    if score < min_score:
-        min_score = score
-        final_partitioning = labels.copy()
-
-    print("Score:", score)
-    print("Min Score: ", min_score)
-    #
-    # partitioning = reassign_partitions(graph, labels, num_partitions, score)
-    # print("Score after reassignment: ", score_partitioning(graph, partitioning))
-
-write_file(filename, graph, final_partitioning, num_partitions)
+score = score_partitioning(graph, labels)
+print("Score:", score)

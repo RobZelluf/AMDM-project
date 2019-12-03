@@ -4,9 +4,9 @@ import pickle
 from utils import read_file, Graph
 import networkx as nx
 
-filename = 'roadNet-CA.txt'
+graph = read_file()
 
-graph = read_file(filename)
+print(graph)
 
 
 
