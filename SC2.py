@@ -36,11 +36,7 @@ while True:
     kmeans.fit(vecs)
 
     labels = kmeans.labels_
-    for i in range(num_partitions):
-        print("Num", i, " - ", len([x for x in labels if x == i]))
-
     score = score_partitioning(graph, labels)
-    print("Score:", score)
 
     if score < best_score:
         best_score = score
