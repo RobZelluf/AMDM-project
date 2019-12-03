@@ -84,8 +84,8 @@ def init_partitions(graph, num_partitions, init_size=10, seed=0):
 
 def assign_partition(graph, partitioning, normalization, assign_v, num_partitions, threshold=0):
     visit_count = np.zeros(graph.num_vertices)
-    crawls = 600 - int((sum(normalization) / graph.num_vertices) * 500)
-    steps = 4 - int((sum(normalization) / graph.num_vertices) * 3)
+    crawls = 300 - int((sum(normalization) / graph.num_vertices) * 200)
+    steps = 3 - int((sum(normalization) / graph.num_vertices) * 2)
     if assign_v % int(graph.num_vertices / 100) == 0:
         print("Assigning partition ", assign_v, "out of", graph.num_vertices, "- ",
               int(assign_v / graph.num_vertices * 100), "%")
@@ -111,3 +111,23 @@ def assign_partition(graph, partitioning, normalization, assign_v, num_partition
         return normalized_votes.argmax()
     else:
         return -1
+
+
+def reassign_partitions(graph, partitioning, k, min_score):
+    repartitioning = partitioning.copy()
+    for loops in range(3):
+        reassigned = 0
+        for v1 in range(graph.num_vertices):
+            votes = [0] * k
+            for v2 in graph.edge_dict[v1]:
+                votes[partitioning[v2]] += 1
+            if votes.index(max(votes)) != repartitioning[v1]:
+                reassigned += 1
+            repartitioning[v1] = votes.index(max(votes))
+        score = score_partitioning(graph,repartitioning)
+        if score < min_score:
+            min_score = score
+            partitioning = repartitioning.copy()
+        print("Reassigned: ", reassigned)
+        print(score)
+    return partitioning
