@@ -35,7 +35,7 @@ with open("EV/" + filename[:-4] + ".p", "wb") as f:
     p.dump([vecs, vals], f)
 
 
-for num_eigenvectors in range(num_partitions, max_num_eigenvectors, int((max_num_eigenvectors - num_partitions) / 10)):
+for num_eigenvectors in range(1, max_num_eigenvectors):
     print("Running k-means", k_means_iterations, "times for", num_eigenvectors, "eigenvectors.")
     count = 0
     for it in range(k_means_iterations):
