@@ -4,7 +4,6 @@ from collections import defaultdict
 from scipy.sparse import lil_matrix
 import scipy.sparse as sparse
 import random
-import networkx as nx
 
 
 class Graph:
@@ -144,31 +143,4 @@ def partition_count(partitioning):
         if(partitioning[i] != -1):
             counts[partitioning[i]] += 1
     return counts
-
-
-def create_nx_graph(filename='CA-GrQc.txt'):
-    print(filename)
-
-    graph = nx.Graph()
-    vertices = []
-    start = datetime.datetime.now()
-    with open('data/' + filename, 'r') as f:
-        i = 0
-        lines = f.readlines()
-        for line in lines:
-            if i % int(len(lines) / 10) == 0:
-                print("Reading line", i, "out of", len(lines), "- ", int(i / len(lines) * 100), "%")
-
-            i += 1
-
-            if line[0] == "#" or line[0] == " ":
-                continue
-
-            V = [int(v) for v in line.split()]
-            vertices.extend(V)
-            graph.add_edge(V[0], V[1])
-
-    graph.add_node_from(V)
-
-    return graph
 
